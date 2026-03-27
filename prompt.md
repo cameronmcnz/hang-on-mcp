@@ -1,0 +1,3 @@
+I want you to read each of the Jira task, story, feature and bug tickets assigned to me and go through them one at a time. All tickets in the Hangman App Jira space apply to this project.
+For each ticket, read the title and summary and any other pertinent info about the ticket and then transition the ticket to the "In Progress" status. Then implement all of the work required to successfully implement the work described in the title and ticket description.
+When the work on a given ticket is complete, add a comment that quickly describes what was done int 5 sentences or less. Then transition the ticket into the "Done" status.
