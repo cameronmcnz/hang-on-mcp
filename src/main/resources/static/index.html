@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hang On, Man</title>
+    <style>
+:root {
+    --bg: #090b12;
+    --panel: rgba(17, 21, 34, 0.92);
+    --panel-alt: rgba(25, 29, 47, 0.96);
+    --text: #f5f7ff;
+    --muted: #9fa7c8;
+    --accent: #59f3ff;
+    --accent-2: #ff7a18;
+    --danger: #ff4365;
+    --success: #68ff8e;
+    --warning: #ffd166;
+    --info: #7ab8ff;
+    --border: rgba(122, 184, 255, 0.25);
+    --shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text);
+    background:
+            radial-gradient(circle at top left, rgba(255, 122, 24, 0.35), transparent 30%),
+            radial-gradient(circle at top right, rgba(89, 243, 255, 0.22), transparent 25%),
+            linear-gradient(135deg, #06070d 0%, #0d111b 45%, #151b2c 100%);
+    position: relative;
+    overflow-x: hidden;
+}
+
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+body::before {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    background-size: 22px 22px;
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.85), transparent);
+}
+
+body::after {
+    background: repeating-linear-gradient(
+            -55deg,
+            rgba(255, 67, 101, 0.05) 0,
+            rgba(255, 67, 101, 0.05) 10px,
+            transparent 10px,
+            transparent 20px
+    );
+}
+
+.page-shell {
+    position: relative;
+    z-index: 1;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 32px 20px 48px;
+}
+
+.panel {
+    background: linear-gradient(180deg, var(--panel-alt), var(--panel));
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(10px);
+}
+
+.panel-inner {
+    background: transparent;
+}
+
+.hero {
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::after {
+    content: "CODE OR PERISH";
+    position: absolute;
+    right: -16px;
+    top: 12px;
+    font-size: clamp(2rem, 6vw, 5rem);
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.06);
+    transform: rotate(-8deg);
+    letter-spacing: 0.22em;
+}
+
+.eyebrow {
+    margin: 0 0 10px;
+    color: var(--warning);
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+h1,
+h2 {
+    margin-top: 0;
+}
+
+h1 {
+    margin-bottom: 12px;
+    font-size: clamp(2.6rem, 5vw, 4.8rem);
+    line-height: 0.95;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-shadow: 0 0 14px rgba(89, 243, 255, 0.45), 0 0 26px rgba(255, 122, 24, 0.22);
+}
+
+.hero-copy {
+    max-width: 760px;
+    color: var(--muted);
+    font-size: 1.05rem;
+    margin: 0;
+}
+
+.layout-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2.1fr) minmax(280px, 0.9fr);
+    gap: 24px;
+}
+
+.sidebar {
+    display: grid;
+    gap: 20px;
+}
+
+.battle-panel {
+    padding: 24px;
+}
+
+.battle-topline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.tag,
+.status-pill,
+.chip,
+button {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 800;
+}
+
+.tag {
+    color: var(--accent);
+}
+
+.status-pill {
+    border-radius: 999px;
+    padding: 10px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    font-size: 0.88rem;
+}
+
+.status-live {
+    background: rgba(122, 184, 255, 0.16);
+    color: var(--info);
+}
+
+.status-win {
+    background: rgba(104, 255, 142, 0.16);
+    color: var(--success);
+}
+
+.status-loss {
+    background: rgba(255, 67, 101, 0.16);
+    color: var(--danger);
+}
+
+.feedback-box {
+    border-radius: 18px;
+    padding: 16px 18px;
+    margin-bottom: 22px;
+    border: 1px solid transparent;
+    font-weight: 600;
+}
+
+.feedback-box.info {
+    background: rgba(122, 184, 255, 0.12);
+    border-color: rgba(122, 184, 255, 0.32);
+}
+
+.feedback-box.success {
+    background: rgba(104, 255, 142, 0.12);
+    border-color: rgba(104, 255, 142, 0.3);
+}
+
+.feedback-box.warning {
+    background: rgba(255, 209, 102, 0.12);
+    border-color: rgba(255, 209, 102, 0.3);
+}
+
+.feedback-box.danger {
+    background: rgba(255, 67, 101, 0.12);
+    border-color: rgba(255, 67, 101, 0.3);
+}
+
+.gallows-grid {
+    display: grid;
+    grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+    gap: 22px;
+}
+
+.gallows-card,
+.word-card,
+.stats-panel,
+.letters-panel,
+.theme-panel {
+    padding: 22px;
+}
+
+.hangman-art {
+    margin: 0;
+    padding: 18px;
+    background: #05070d;
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--accent);
+    min-height: 220px;
+    font-size: 1.05rem;
+    line-height: 1.15;
+    box-shadow: inset 0 0 20px rgba(89, 243, 255, 0.08);
+}
+
+.attempts {
+    margin: 14px 0 0;
+    color: var(--muted);
+}
+
+.attempts.remaining {
+    color: var(--warning);
+}
+
+.masked-word {
+    margin: 20px 0 22px;
+    padding: 18px 20px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, rgba(89, 243, 255, 0.1), rgba(255, 122, 24, 0.13));
+    font-size: clamp(1.8rem, 4vw, 3.2rem);
+    font-weight: 900;
+    letter-spacing: 0.34em;
+    text-align: center;
+    text-shadow: 0 0 20px rgba(89, 243, 255, 0.25);
+}
+
+.result-banner {
+    margin-bottom: 18px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    font-weight: 800;
+}
+
+.result-win {
+    background: rgba(104, 255, 142, 0.14);
+    color: var(--success);
+}
+
+.result-loss {
+    background: rgba(255, 67, 101, 0.14);
+    color: #ffc4cf;
+}
+
+.guess-zone {
+    margin-top: 14px;
+}
+
+.guess-form label {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--muted);
+    font-weight: 700;
+}
+
+.guess-controls {
+    display: flex;
+    gap: 12px;
+}
+
+input[type="text"] {
+    width: 92px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    border: 1px solid rgba(122, 184, 255, 0.4);
+    background: rgba(5, 7, 13, 0.95);
+    color: var(--text);
+    font-size: 1.7rem;
+    font-weight: 900;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+input[type="text"]:focus {
+    outline: 2px solid rgba(89, 243, 255, 0.55);
+    outline-offset: 2px;
+}
+
+button {
+    appearance: none;
+    border: none;
+    border-radius: 16px;
+    padding: 14px 18px;
+    cursor: pointer;
+    color: #041019;
+    background: linear-gradient(135deg, var(--accent), #84f9ff);
+    box-shadow: 0 12px 26px rgba(89, 243, 255, 0.2);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    filter: saturate(1.1);
+    box-shadow: 0 16px 28px rgba(89, 243, 255, 0.28);
+}
+
+button:disabled,
+input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.secondary-button {
+    width: 100%;
+    margin-top: 18px;
+    color: white;
+    background: linear-gradient(135deg, #ff7a18, #ff4365);
+    box-shadow: 0 12px 26px rgba(255, 67, 101, 0.24);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.stat-card {
+    padding: 18px 12px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.04);
+    text-align: center;
+}
+
+.stat-value {
+    display: block;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--accent);
+}
+
+.stat-label {
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 46px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.chip-danger {
+    background: rgba(255, 67, 101, 0.18);
+    color: #ffd2da;
+}
+
+.empty-state,
+.theme-panel ul {
+    color: var(--muted);
+}
+
+.theme-panel ul {
+    margin: 0;
+    padding-left: 18px;
+    line-height: 1.9;
+}
+
+.hidden {
+    display: none;
+}
+
+@media (max-width: 980px) {
+    .layout-grid,
+    .gallows-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero::after {
+        opacity: 0.5;
+        top: auto;
+        bottom: -8px;
+    }
+}
+
+@media (max-width: 640px) {
+    .page-shell {
+        padding-inline: 14px;
+    }
+
+    .hero,
+    .battle-panel,
+    .gallows-card,
+    .word-card,
+    .stats-panel,
+    .letters-panel,
+    .theme-panel {
+        padding: 18px;
+    }
+
+    .guess-controls,
+    .battle-topline,
+    .stats-grid {
+        grid-template-columns: 1fr;
+        display: grid;
+    }
+
+    input[type="text"],
+    button {
+        width: 100%;
+    }
+
+    .masked-word {
+        letter-spacing: 0.18em;
+        font-size: 1.55rem;
+    }
+}
+
+</style>
+</head>
+<body>
+<div class="page-shell">
+    <header class="hero panel">
+        <p class="eyebrow">FULL-STACK HANGMAN APP FOR CODE PIRATES</p>
+        <h1>HANG ON, MAN</h1>
+        <p class="hero-copy">
+            Dark decks. Loud colors. Java-flavored doom. Outsmart the gallows before the bug beast claims another developer.
+        </p>
+    </header>
+
+    <main class="layout-grid">
+        <section class="panel battle-panel">
+            <div class="battle-topline">
+                <span class="tag">CURRENT DUEL</span>
+                <span id="status-pill" class="status-pill status-live">In Progress</span>
+            </div>
+
+            <div id="feedback-box" class="feedback-box info">
+                Choose a letter and prove ye belong on the bridge.
+            </div>
+
+            <div class="gallows-grid">
+                <div class="gallows-card panel-inner">
+                    <h2>Bug Beast Meter</h2>
+                    <pre id="hangman-art" class="hangman-art"></pre>
+                    <p class="attempts">
+                        Wrong shots: <strong id="wrong-guess-count">0</strong>
+                        / <strong id="max-wrong-guesses">6</strong>
+                    </p>
+                    <p class="attempts remaining">
+                        Remaining tries: <strong id="remaining-attempts">6</strong>
+                    </p>
+                </div>
+
+                <div class="word-card panel-inner">
+                    <h2>Secret Code Word</h2>
+                    <div id="masked-word" class="masked-word">_ _ _ _</div>
+
+                    <div id="result-banner" class="result-banner hidden"></div>
+
+                    <div class="guess-zone">
+                        <form id="guess-form" class="guess-form">
+                            <label for="guess">Fire a letter</label>
+                            <div class="guess-controls">
+                                <input id="guess"
+                                       name="guess"
+                                       type="text"
+                                       maxlength="1"
+                                       autocomplete="off"
+                                       inputmode="text"
+                                       pattern="[A-Za-z]"
+                                       aria-label="Guess a letter"
+                                       required>
+                                <button type="submit">Launch Guess</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <button id="new-game-button" type="button" class="secondary-button">Summon New Game</button>
+                </div>
+            </div>
+        </section>
+
+        <aside class="sidebar">
+            <section class="panel stats-panel">
+                <h2>Captain Stats</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span id="games-played" class="stat-value">0</span>
+                        <span class="stat-label">Games</span>
+                    </div>
+                    <div class="stat-card">
+                        <span id="wins" class="stat-value">0</span>
+                        <span class="stat-label">Wins</span>
+                    </div>
+                    <div class="stat-card">
+                        <span id="losses" class="stat-value">0</span>
+                        <span class="stat-label">Losses</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel letters-panel">
+                <h2>Wrong Guesses</h2>
+                <div id="wrong-letters" class="chip-row"></div>
+                <p id="wrong-empty" class="empty-state">No bad shots yet. Menacingly impressive.</p>
+            </section>
+
+            <section class="panel letters-panel">
+                <h2>Used Letters</h2>
+                <div id="all-guesses" class="chip-row"></div>
+                <p id="guesses-empty" class="empty-state">The alphabet still fears ye.</p>
+            </section>
+
+            <section class="panel theme-panel">
+                <h2>Word Bank Vibes</h2>
+                <ul>
+                    <li>Java slang</li>
+                    <li>GitHub energy</li>
+                    <li>Copilot chaos</li>
+                    <li>Zero databases</li>
+                </ul>
+            </section>
+        </aside>
+    </main>
+</div>
+
+<script>
+const STORAGE_KEY = 'hangonman-browser-state';
+const DEFAULT_MAX_WRONG_GUESSES = 6;
+const WORDS = [
+    'JAVA',
+    'SPRING',
+    'MAVEN',
+    'BEAN',
+    'CODER',
+    'GITHUB',
+    'COPILOT',
+    'PROMPT',
+    'COMMIT',
+    'BRANCH',
+    'MERGE',
+    'REFACTOR',
+    'DEBUG',
+    'TEMPLATE',
+    'CONTROLLER'
+];
+
+const GAME_STATUS = {
+    IN_PROGRESS: 'IN_PROGRESS',
+    WON: 'WON',
+    LOST: 'LOST'
+};
+
+const GUESS_OUTCOME = {
+    INVALID: 'INVALID',
+    ALREADY_GUESSED: 'ALREADY_GUESSED',
+    CORRECT: 'CORRECT',
+    WRONG: 'WRONG',
+    WON: 'WON',
+    LOST: 'LOST',
+    ROUND_OVER: 'ROUND_OVER'
+};
+
+const HANGMAN_STAGES = [
+`  +---+
+  |   |
+      |
+      |
+      |
+      |
+=========` ,
+`  +---+
+  |   |
+  O   |
+      |
+      |
+      |
+=========`,
+`  +---+
+  |   |
+  O   |
+  |   |
+      |
+      |
+=========`,
+`  +---+
+  |   |
+  O   |
+ /|   |
+      |
+      |
+=========`,
+`  +---+
+  |   |
+  O   |
+ /|\\  |
+      |
+      |
+=========`,
+`  +---+
+  |   |
+  O   |
+ /|\\  |
+ /    |
+      |
+=========`,
+`  +---+
+  |   |
+  O   |
+ /|\\  |
+ / \\  |
+      |
+=========`
+];
+
+const ui = {
+    statusPill: document.getElementById('status-pill'),
+    feedbackBox: document.getElementById('feedback-box'),
+    hangmanArt: document.getElementById('hangman-art'),
+    wrongGuessCount: document.getElementById('wrong-guess-count'),
+    maxWrongGuesses: document.getElementById('max-wrong-guesses'),
+    remainingAttempts: document.getElementById('remaining-attempts'),
+    maskedWord: document.getElementById('masked-word'),
+    resultBanner: document.getElementById('result-banner'),
+    guessForm: document.getElementById('guess-form'),
+    guessInput: document.getElementById('guess'),
+    newGameButton: document.getElementById('new-game-button'),
+    gamesPlayed: document.getElementById('games-played'),
+    wins: document.getElementById('wins'),
+    losses: document.getElementById('losses'),
+    wrongLetters: document.getElementById('wrong-letters'),
+    allGuesses: document.getElementById('all-guesses'),
+    wrongEmpty: document.getElementById('wrong-empty'),
+    guessesEmpty: document.getElementById('guesses-empty')
+};
+
+let state = loadState();
+ensureGame();
+render();
+
+ui.guessForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const rawGuess = ui.guessInput.value;
+    const feedback = submitGuess(rawGuess);
+    setFeedback(feedback.message, feedback.tone);
+    ui.guessInput.value = '';
+    render();
+});
+
+ui.newGameButton.addEventListener('click', () => {
+    startNewGame();
+    setFeedback('Fresh round, fresh swagger. Another word enters the arena.', 'info');
+    render();
+});
+
+function loadState() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+            return createDefaultState();
+        }
+        const parsed = JSON.parse(raw);
+        return normalizeState(parsed);
+    } catch (error) {
+        console.error('Failed to load state from localStorage.', error);
+        return createDefaultState();
+    }
+}
+
+function saveState() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function createDefaultState() {
+    return {
+        stats: {
+            gamesPlayed: 0,
+            wins: 0,
+            losses: 0
+        },
+        currentGame: null,
+        feedback: {
+            message: 'Choose a letter and prove ye belong on the bridge.',
+            tone: 'info'
+        }
+    };
+}
+
+function normalizeState(raw) {
+    return {
+        stats: {
+            gamesPlayed: Number(raw?.stats?.gamesPlayed) || 0,
+            wins: Number(raw?.stats?.wins) || 0,
+            losses: Number(raw?.stats?.losses) || 0
+        },
+        currentGame: raw?.currentGame ? normalizeGame(raw.currentGame) : null,
+        feedback: {
+            message: raw?.feedback?.message || 'Choose a letter and prove ye belong on the bridge.',
+            tone: raw?.feedback?.tone || 'info'
+        }
+    };
+}
+
+function normalizeGame(rawGame) {
+    return {
+        targetWord: String(rawGame.targetWord || pickRandomWord()).toUpperCase(),
+        maxWrongGuesses: Number(rawGame.maxWrongGuesses) || DEFAULT_MAX_WRONG_GUESSES,
+        correctLetters: uniqueSortedLetters(rawGame.correctLetters || []),
+        wrongLetters: uniqueSortedLetters(rawGame.wrongLetters || []),
+        status: Object.values(GAME_STATUS).includes(rawGame.status) ? rawGame.status : GAME_STATUS.IN_PROGRESS
+    };
+}
+
+function uniqueSortedLetters(letters) {
+    return [...new Set((letters || []).map((letter) => String(letter).toUpperCase()).filter(isSingleLetter))].sort();
+}
+
+function isSingleLetter(value) {
+    return /^[A-Z]$/.test(value);
+}
+
+function ensureGame() {
+    if (!state.currentGame) {
+        startNewGame(false);
+    }
+}
+
+function pickRandomWord() {
+    return WORDS[Math.floor(Math.random() * WORDS.length)];
+}
+
+function createGame() {
+    return {
+        targetWord: pickRandomWord(),
+        maxWrongGuesses: DEFAULT_MAX_WRONG_GUESSES,
+        correctLetters: [],
+        wrongLetters: [],
+        status: GAME_STATUS.IN_PROGRESS
+    };
+}
+
+function startNewGame(updateFeedback = true) {
+    state.currentGame = createGame();
+    if (updateFeedback) {
+        state.feedback = {
+            message: 'Fresh round, fresh swagger. Another word enters the arena.',
+            tone: 'info'
+        };
+    }
+    saveState();
+}
+
+function submitGuess(rawGuess) {
+    let game = state.currentGame;
+    if (!game) {
+        startNewGame(false);
+        game = state.currentGame;
+    }
+
+    const normalizedGuess = String(rawGuess || '').trim().toUpperCase();
+    if (normalizedGuess.length !== 1 || !isSingleLetter(normalizedGuess)) {
+        return persistFeedback({
+            outcome: GUESS_OUTCOME.INVALID,
+            message: 'That be no proper letter. Fire one A-Z cannon shot at a time.',
+            tone: 'warning'
+        });
+    }
+
+    const outcome = applyGuess(game, normalizedGuess);
+    const feedback = mapOutcomeToFeedback(outcome);
+    saveState();
+    return persistFeedback(feedback);
+}
+
+function applyGuess(game, guess) {
+    if (game.status !== GAME_STATUS.IN_PROGRESS) {
+        return GUESS_OUTCOME.ROUND_OVER;
+    }
+
+    if (hasBeenGuessed(game, guess)) {
+        return GUESS_OUTCOME.ALREADY_GUESSED;
+    }
+
+    if (game.targetWord.includes(guess)) {
+        game.correctLetters = uniqueSortedLetters([...game.correctLetters, guess]);
+        if (isSolved(game)) {
+            game.status = GAME_STATUS.WON;
+            state.stats.gamesPlayed += 1;
+            state.stats.wins += 1;
+            return GUESS_OUTCOME.WON;
+        }
+        return GUESS_OUTCOME.CORRECT;
+    }
+
+    game.wrongLetters = uniqueSortedLetters([...game.wrongLetters, guess]);
+    if (game.wrongLetters.length >= game.maxWrongGuesses) {
+        game.status = GAME_STATUS.LOST;
+        state.stats.gamesPlayed += 1;
+        state.stats.losses += 1;
+        return GUESS_OUTCOME.LOST;
+    }
+    return GUESS_OUTCOME.WRONG;
+}
+
+function hasBeenGuessed(game, guess) {
+    return game.correctLetters.includes(guess) || game.wrongLetters.includes(guess);
+}
+
+function isSolved(game) {
+    return [...game.targetWord].every((letter) => game.correctLetters.includes(letter));
+}
+
+function mapOutcomeToFeedback(outcome) {
+    switch (outcome) {
+        case GUESS_OUTCOME.ALREADY_GUESSED:
+            return {
+                outcome,
+                message: 'Ye already fired that rune. Try a fresh letter, matey.',
+                tone: 'warning'
+            };
+        case GUESS_OUTCOME.CORRECT:
+            return {
+                outcome,
+                message: 'Direct hit! The code gods reveal another glyph.',
+                tone: 'success'
+            };
+        case GUESS_OUTCOME.WRONG:
+            return {
+                outcome,
+                message: 'Missed the mark. The bug beast grows stronger.',
+                tone: 'danger'
+            };
+        case GUESS_OUTCOME.WON:
+            return {
+                outcome,
+                message: 'Victory! Ye saved the repo and humiliated the gallows.',
+                tone: 'success'
+            };
+        case GUESS_OUTCOME.LOST:
+            return {
+                outcome,
+                message: 'The beast wins this round. The word slips from the shadows no longer.',
+                tone: 'danger'
+            };
+        case GUESS_OUTCOME.ROUND_OVER:
+            return {
+                outcome,
+                message: 'Round be over, captain. Slam the New Game button for another duel.',
+                tone: 'info'
+            };
+        case GUESS_OUTCOME.INVALID:
+        default:
+            return {
+                outcome: GUESS_OUTCOME.INVALID,
+                message: 'That be no proper letter. Fire one A-Z cannon shot at a time.',
+                tone: 'warning'
+            };
+    }
+}
+
+function persistFeedback(feedback) {
+    state.feedback = {
+        message: feedback.message,
+        tone: feedback.tone
+    };
+    saveState();
+    return feedback;
+}
+
+function setFeedback(message, tone) {
+    state.feedback = { message, tone };
+    saveState();
+}
+
+function getMaskedWord(game) {
+    return [...game.targetWord].map((letter) => game.correctLetters.includes(letter) ? letter : '_').join(' ');
+}
+
+function getAllGuesses(game) {
+    return uniqueSortedLetters([...game.correctLetters, ...game.wrongLetters]);
+}
+
+function getRemainingAttempts(game) {
+    return game.maxWrongGuesses - game.wrongLetters.length;
+}
+
+function render() {
+    const game = state.currentGame;
+    const wrongGuessCount = game.wrongLetters.length;
+
+    renderFeedback();
+    renderStatus(game);
+
+    ui.hangmanArt.textContent = HANGMAN_STAGES[Math.min(wrongGuessCount, HANGMAN_STAGES.length - 1)];
+    ui.wrongGuessCount.textContent = String(wrongGuessCount);
+    ui.maxWrongGuesses.textContent = String(game.maxWrongGuesses);
+    ui.remainingAttempts.textContent = String(getRemainingAttempts(game));
+    ui.maskedWord.textContent = getMaskedWord(game);
+
+    ui.gamesPlayed.textContent = String(state.stats.gamesPlayed);
+    ui.wins.textContent = String(state.stats.wins);
+    ui.losses.textContent = String(state.stats.losses);
+
+    renderLetters(ui.wrongLetters, game.wrongLetters, true, ui.wrongEmpty);
+    renderLetters(ui.allGuesses, getAllGuesses(game), false, ui.guessesEmpty);
+    renderResultBanner(game);
+
+    const inProgress = game.status === GAME_STATUS.IN_PROGRESS;
+    ui.guessInput.disabled = !inProgress;
+    ui.guessForm.querySelector('button').disabled = !inProgress;
+
+    if (inProgress) {
+        ui.guessInput.focus();
+    }
+}
+
+function renderFeedback() {
+    ui.feedbackBox.textContent = state.feedback.message;
+    ui.feedbackBox.className = `feedback-box ${state.feedback.tone}`;
+}
+
+function renderStatus(game) {
+    ui.statusPill.className = 'status-pill';
+    if (game.status === GAME_STATUS.WON) {
+        ui.statusPill.classList.add('status-win');
+        ui.statusPill.textContent = 'Victory';
+    } else if (game.status === GAME_STATUS.LOST) {
+        ui.statusPill.classList.add('status-loss');
+        ui.statusPill.textContent = 'Defeat';
+    } else {
+        ui.statusPill.classList.add('status-live');
+        ui.statusPill.textContent = 'In Progress';
+    }
+}
+
+function renderLetters(container, letters, dangerStyle, emptyElement) {
+    container.innerHTML = '';
+    if (!letters.length) {
+        emptyElement.classList.remove('hidden');
+        return;
+    }
+
+    emptyElement.classList.add('hidden');
+    for (const letter of letters) {
+        const chip = document.createElement('span');
+        chip.className = dangerStyle ? 'chip chip-danger' : 'chip';
+        chip.textContent = letter;
+        container.appendChild(chip);
+    }
+}
+
+function renderResultBanner(game) {
+    ui.resultBanner.className = 'result-banner hidden';
+    ui.resultBanner.textContent = '';
+
+    if (game.status === GAME_STATUS.WON) {
+        ui.resultBanner.className = 'result-banner result-win';
+        ui.resultBanner.textContent = 'Repo saved. Swagger restored.';
+        return;
+    }
+
+    if (game.status === GAME_STATUS.LOST) {
+        ui.resultBanner.className = 'result-banner result-loss';
+        ui.resultBanner.innerHTML = `The word was <strong>${escapeHtml(game.targetWord)}</strong>.`;
+    }
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hang On, Man</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+<div class="page-shell">
+    <header class="hero panel">
+        <p class="eyebrow">SERVER-SIDE HANGMAN FOR CODE PIRATES</p>
+        <h1>HANG ON, MAN</h1>
+        <p class="hero-copy">
+            Dark decks. Loud colors. Java-flavored doom. Outsmart the gallows before the bug beast claims another developer.
+        </p>
+    </header>
+
+    <main class="layout-grid">
+        <section class="panel battle-panel">
+            <div class="battle-topline">
+                <span class="tag">CURRENT DUEL</span>
+                <span class="status-pill"
+                      th:classappend="${game.status.name() == 'WON'} ? ' status-win' : (${game.status.name() == 'LOST'} ? ' status-loss' : ' status-live')"
+                      th:text="${game.status.name() == 'WON'} ? 'Victory' : (${game.status.name() == 'LOST'} ? 'Defeat' : 'In Progress')">
+                    In Progress
+                </span>
+            </div>
+
+            <div class="feedback-box" th:classappend="' ' + ${feedbackType}" th:text="${feedback}">
+                Choose a letter and prove ye belong on the bridge.
+            </div>
+
+            <div class="gallows-grid">
+                <div class="gallows-card">
+                    <h2>Bug Beast Meter</h2>
+                    <pre class="hangman-art" th:text="${hangmanStage}"></pre>
+                    <p class="attempts">
+                        Wrong shots: <strong th:text="${game.wrongGuessCount}">0</strong>
+                        / <strong th:text="${game.maxWrongGuesses}">6</strong>
+                    </p>
+                    <p class="attempts remaining">
+                        Remaining tries: <strong th:text="${game.remainingAttempts}">6</strong>
+                    </p>
+                </div>
+
+                <div class="word-card">
+                    <h2>Secret Code Word</h2>
+                    <div class="masked-word" th:text="${game.maskedWord}">_ _ _ _</div>
+
+                    <div class="result-banner result-win" th:if="${game.status.name() == 'WON'}">
+                        Repo saved. Swagger restored.
+                    </div>
+                    <div class="result-banner result-loss" th:if="${game.status.name() == 'LOST'}">
+                        The word was <strong th:text="${wordReveal}">JAVA</strong>.
+                    </div>
+
+                    <div class="guess-zone" th:if="${game.inProgress}">
+                        <form th:action="@{/guess}" method="post" class="guess-form">
+                            <label for="guess">Fire a letter</label>
+                            <div class="guess-controls">
+                                <input id="guess"
+                                       name="guess"
+                                       type="text"
+                                       maxlength="1"
+                                       autocomplete="off"
+                                       inputmode="text"
+                                       pattern="[A-Za-z]"
+                                       aria-label="Guess a letter"
+                                       required>
+                                <button type="submit">Launch Guess</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <form th:action="@{/new-game}" method="post" class="new-game-form">
+                        <button type="submit" class="secondary-button">Summon New Game</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <aside class="sidebar">
+            <section class="panel stats-panel">
+                <h2>Captain Stats</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-value" th:text="${stats.gamesPlayed}">0</span>
+                        <span class="stat-label">Games</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value" th:text="${stats.wins}">0</span>
+                        <span class="stat-label">Wins</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value" th:text="${stats.losses}">0</span>
+                        <span class="stat-label">Losses</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel letters-panel">
+                <h2>Wrong Guesses</h2>
+                <div class="chip-row" th:if="${!#lists.isEmpty(game.wrongLetters)}">
+                    <span class="chip chip-danger" th:each="letter : ${game.wrongLetters}" th:text="${letter}">X</span>
+                </div>
+                <p class="empty-state" th:if="${#lists.isEmpty(game.wrongLetters)}">No bad shots yet. Menacingly impressive.</p>
+            </section>
+
+            <section class="panel letters-panel">
+                <h2>Used Letters</h2>
+                <div class="chip-row" th:if="${!#lists.isEmpty(game.allGuesses)}">
+                    <span class="chip" th:each="letter : ${game.allGuesses}" th:text="${letter}">A</span>
+                </div>
+                <p class="empty-state" th:if="${#lists.isEmpty(game.allGuesses)}">The alphabet still fears ye.</p>
+            </section>
+
+            <section class="panel theme-panel">
+                <h2>Word Bank Vibes</h2>
+                <ul>
+                    <li>Java slang</li>
+                    <li>GitHub energy</li>
+                    <li>Copilot chaos</li>
+                    <li>Zero databases</li>
+                </ul>
+            </section>
+        </aside>
+    </main>
+</div>
+</body>
+</html>
+
